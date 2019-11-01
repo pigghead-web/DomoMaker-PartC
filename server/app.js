@@ -39,7 +39,7 @@ let redisPASS = 'PSEfCN5MHLQQio06HzhFHkiVaxWghsYU';  // password from redislabs
 
 // the above gets overwritten when running on heroku
 if (process.env.REDISCLOUD_URL) {
-  redisURL = url.parse(process.env.REDISCLOUSE_URL);
+  redisURL = url.parse(process.env.REDISCLOUD_URL);
   redisPASS = redisURL.auth.split(':')[1];
 }
 
