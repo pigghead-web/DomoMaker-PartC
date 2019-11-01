@@ -12,6 +12,9 @@ const session = require('express-session');
 // Part c
 const RedisStore = require('connect-redis')(session);  // storing session data + cookies in redis
 const url = require('url');
+// csurf automatically generates unique tokens for each user for each page
+// These tokens are checked upon request to prevent "Cross-Site-Request-Forgery"
+const csrf = require('csurf');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -48,6 +51,7 @@ const app = express();
 
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted/`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
+app.disable('x-powered-by');
 app.use(compression());
 app.use(bodyParser.urlencoded({
   extended: true,
@@ -62,11 +66,24 @@ app.use(session({
   secret: 'Domo Arigato',  // string used as a seed for hashing/creating unique session keys
   resave: true,  // refresh the key to keep it active
   saveUninitialized: true,  // make sessions even when not loggin in
+  cookie: {
+    httpOnly: true,
+  }
 }));
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', '{__dirname}/../views');
 app.use(cookieParser());
+// csrf must come after cookieParser and app.use(session({...}))
+app.use(csrf());
+app.use((err, req, res, next) => {
+  // * Do nothing if we get a EBADCSRFTOKEN error b/c it indicates that somebody is probably
+  // ** up to no good
+  if (err.code !== 'EBADSCSRFTOKEN') return next(err);
+  
+  console.log('Missing CSRF token');
+  return false;
+});
 
 router(app);
 

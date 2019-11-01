@@ -8,11 +8,13 @@ const Account = models.Account;
 // - RENDER FUNCTIONS -
 // * These functions send back pages when they are called
 const loginPage = (req, res) => {
-  res.render('login');
+  // generate a new csrfToken for every request
+  res.render('login', { csrfToken: req.csrfToken() });
 };
 
 const signupPage = (req, res) => {
-  res.render('signup');
+  // generate a new csrfToken for every request
+  res.render('signup', { csrfToken: req.csrfToken() });
 };
 
 const logout = (req, res) => {
