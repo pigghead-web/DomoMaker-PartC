@@ -30,6 +30,7 @@ const requiresSecure = (req, res, next) => {
   }
 
   // must call the next function
+  return next();
 };
 
 // bypass the check
