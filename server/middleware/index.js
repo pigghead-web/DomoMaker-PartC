@@ -40,7 +40,7 @@ module.exports.requiresLogin = requiresLogin;
 module.exports.requiresLogout = requiresLogout;
 
 // create an environment variable called NODE_ENV
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV === 'production') {
   // if we are NOT developing (hence 'production', working program), require the secure
   module.exports.requiresSecure = requiresSecure;
 } else {
