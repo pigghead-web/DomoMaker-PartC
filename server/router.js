@@ -9,20 +9,20 @@ const router = (app) => {
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controller.Account.loginPage);  // GET
   // mid: we must ensure its secure; ensure they are logged out to attempt to sign in
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controller.Account.login);  // POST
-  
+
   // SIGNUP
   app.get('/signup', mid.requiresSecure, mid.requiresLogout, controller.Account.signupPage);  // GET
   // mid: ensure secure; ensure they are logged out to attempt to sign up
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controller.Account.signup);  // POST
-  
+
   // LOGOUT
   // mid: ensure they are logged in; can't log out if not logged in
   app.get('/logout', mid.requiresLogin, controller.Account.logout);
-  
+
   // MAKER
   app.get('/maker', mid.requiresLogin, controller.Domo.makerPage);  // GET
   app.post('/maker', mid.requiresLogin, controller.Domo.makeDomo);  // POST
-  
+
   // /
   app.get('/', mid.requiresSecure, mid.requiresLogout, controller.Account.loginPage);  // DEFAULT
 };

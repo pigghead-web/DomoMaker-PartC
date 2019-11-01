@@ -30,15 +30,15 @@ mongoose.connect(dbURL, (err) => {
 
 // Get the username/password for connecting to redis
 // * We simply parse it out of the redis url from heroku
-const redisURL = {
+let redisURL = {
   hostname: 'redis-15954.c9.us-east-1-2.ec2.cloud.redislabs.com',  // hostname from redislabs
   port: 15954,  // port number from redislabs
-}
+};
 
 let redisPASS = 'PSEfCN5MHLQQio06HzhFHkiVaxWghsYU';  // password from redislabs
 
 // the above gets overwritten when running on heroku
-if(process.env.REDISCLOUD_URL) {
+if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUSE_URL);
   redisPASS = redisURL.auth.split(':')[1];
 }
@@ -61,14 +61,14 @@ app.use(session({
   store: new RedisStore({
     host: redisURL.hostname,
     port: redisURL.port,
-    pass: redisPASS
+    pass: redisPASS,
   }),
   secret: 'Domo Arigato',  // string used as a seed for hashing/creating unique session keys
   resave: true,  // refresh the key to keep it active
   saveUninitialized: true,  // make sessions even when not loggin in
   cookie: {
     httpOnly: true,
-  }
+  },
 }));
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
@@ -80,7 +80,7 @@ app.use((err, req, res, next) => {
   // * Do nothing if we get a EBADCSRFTOKEN error b/c it indicates that somebody is probably
   // ** up to no good
   if (err.code !== 'EBADSCSRFTOKEN') return next(err);
-  
+
   console.log('Missing CSRF token');
   return false;
 });
